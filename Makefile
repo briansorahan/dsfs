@@ -1,6 +1,20 @@
+IMAGE           = bsorahan/tds
+
+# default target
+all             : image
+
+clean		:
+		@rm -rf .image
+
 image		: .image
 .image		: Dockerfile
-		@docker build -t briansorahan/tds .
+		@docker build -t $(IMAGE) .
 		@touch $@
 
-.PHONY		: image
+py              : image
+		@docker run -it $(IMAGE) /opt/conda/bin/ipython
+
+sh              : image
+		@docker run -it $(IMAGE) /bin/bash
+
+.PHONY		: all clean py sh
