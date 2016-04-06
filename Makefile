@@ -7,11 +7,10 @@ all             : image
 
 clean		:
 		@rm -rf .image
-		@docker rm -f weather_c
 
 image		: .image
 .image		: Dockerfile
-		@docker build -t $(IMAGE) .
+		@docker build -t $(IMAGE) . >/dev/null 2>/dev/null
 		@touch $@
 
 py              : image
@@ -20,9 +19,8 @@ py              : image
 sh              : image
 		@docker run -it $(IMAGE) /bin/bash
 
-weather         :
-.weather        : image
+weather         : .image database.py
+		@docker rm -f weather_c >/dev/null 2>/dev/null || true
 		@cat database.py | docker run -i --name weather_c $(IMAGE) $(PYTHON2)
-		@docker cp weather_c:/projects/getting_started.db .
 
-.PHONY		: all clean py sh
+.PHONY		: all clean py sh weather

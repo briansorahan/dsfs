@@ -36,7 +36,6 @@ with con:
     cur.executemany("INSERT INTO cities  VALUES (?, ?)", cities)
     cur.executemany("INSERT INTO WEATHER VALUES (?, ?, ?, ?, ?)", weather)
 
-    cur.execute("SELECT c.name || ', ' || c.state FROM city c INNER JOIN weather w ON c.name = w.city WHERE lower(w.warm_month) = 'july'")
-    
-    frame = pd.DataFrame(cur.fetchall())
-    print("The cities that are warmest in July are: " + ", ".join(frame))
+    cur.execute("SELECT c.name || ', ' || c.state AS citystate FROM cities c INNER JOIN weather w ON c.name = w.city WHERE lower(w.warm_month) = 'july'")
+    frame = pd.DataFrame(cur.fetchall(), columns=['citystate'])
+    print("The cities that are warmest in July are: " + ", ".join(frame['citystate']) + ".")
