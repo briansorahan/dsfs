@@ -13,6 +13,9 @@ image		: .image
 		@docker build -t $(IMAGE) . >/dev/null 2>/dev/null
 		@touch $@
 
+jupyter         :
+		@docker run --rm -it -p 8888:8888 -v $(pwd):/notebooks jupyter/notebook
+
 py              : image
 		@docker run -it $(IMAGE) $(PYTHON)
 
@@ -23,4 +26,4 @@ weather         : .image database.py
 		@docker rm -f weather_c >/dev/null 2>/dev/null || true
 		@cat database.py | docker run -i --name weather_c $(IMAGE) $(PYTHON2)
 
-.PHONY		: all clean py sh weather
+.PHONY		: all clean jupyter py sh weather
