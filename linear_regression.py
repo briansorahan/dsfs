@@ -33,4 +33,6 @@ X = sm.add_constant(x)
 
 # print("X", X)
 
+loansData.to_csv('loansData_clean.csv', header=True, index=False)
+
 sm.OLS(y, X).fit().summary()
