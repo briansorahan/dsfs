@@ -1,12 +1,7 @@
-from pandas     as pd
-import requests
-import sqlite3  as lite
-import time
+import pandas  as pd
+import sqlite3 as lite
 
-
-con     = lite.connect('temperatures.db')
-apikey  = '8f30f6b1ab2d7700660fd87ac5421415'
-baseURL = 'https://api.forecast.io/forecast'
+con = lite.connect('temperatures.db')
 
 cities = [
     ('Atlanta, GA', 33.762909, -84.422675),
@@ -30,80 +25,36 @@ cities = [
     ('Washington, DC', 38.904103, -77.017229)
 ]
 
-dropTables = "DROP TABLE IF EXISTS daily_temperatures;"
+columns = ['city', 'latitude', 'longitude', 'temperature_max', 'temperature_max_time', 'temperature_min', 'temperature_min_time',
+           'apparent_temperature_max', 'apparent_temperature_max_time', 'apparent_temperature_min', 'apparent_temperature_min_time']
 
-createTables = """
-CREATE TABLE daily_temperatures (
-    city                          TEXT,
+highDeltas = {}
 
-    latitude                      NUMERIC,
-    longitude                     NUMERIC,
-
-    temperature_max               NUMERIC,
-    temperature_max_time          INT,
-
-    temperature_min               NUMERIC,
-    temperature_min_time          INT,
-
-    apparent_temperature_max      NUMERIC,
-    apparent_temperature_max_time INT,
-
-    apparent_temperature_min      NUMERIC,
-    apparent_temperature_min_time INT
-);
-"""
-
-insertDailyTemp = """
-INSERT INTO daily_temperatures (
-    city,
-    latitude,
-    longitude,
-    temperature_max,
-    temperature_max_time,
-    temperature_min,
-    temperature_min_time,
-    apparent_temperature_max,
-    apparent_temperature_max_time,
-    apparent_temperature_min,
-    apparent_temperature_min_time
-) VALUES (?,?,?,?,?,?,?,?,?,?,?);
-"""
-
-def storeTempsFor(city):
+def analyze(city):
     with con:
-        cur    = con.cursor()
-        now    = int(time.time())
-        oneday = 60 * 60 * 24     # secs
+        cur  = con.cursor()
+        name = city[0]
         
-        for t in range(now - oneday, now - (oneday * 31), -1 * oneday):
-            name, lat, lng = city[0], city[1], city[2]
-            u              = '{}/{}/{},{},{}'.format(baseURL, apikey, lat, lng, t)
-            r              = requests.get(u)
-            # daily data is an array with length 1
-            # (just to be consistent with the structure of hourly data, I suppose)
-            data   = r.json()['daily']['data'][0]
-            values = (
-                name,
-                lat,
-                lng,
-                data['temperatureMax'],
-                data['temperatureMaxTime'],
-                data['temperatureMin'],
-                data['temperatureMinTime'],
-                data['apparentTemperatureMax'],
-                data['apparentTemperatureMaxTime'],
-                data['apparentTemperatureMin'],
-                data['apparentTemperatureMinTime']
-            )
-            cur.execute(insertDailyTemp, values)
+        cur.execute("SELECT * FROM daily_temperatures WHERE city = ?", (name,))
+        
+        df    = pd.DataFrame(cur.fetchall(), columns=columns)
+        highs = df['temperature_max'].tolist()
+
+        for i in range(0, len(highs) - 2):
+            if i == 0:
+                highDeltas[name] = [highs[i+1] - highs[i]]
+            else:
+                highDeltas[name].append(highs[i+1] - highs[i])
+
+def report(city):
+    deltas = highDeltas[city[0]]
+    print('{] high temp delta median is {}'.format(city[0], sum(deltas) / len(deltas)))
 
 def main():
-    # Fetch and store temperatures
-    with con:
-        con.cursor().execute(dropTables)
-        con.cursor().execute(createTables)
+    # Analyze temperatures
     for city in cities:
-        storeTempsFor(city)
+        analyze(city)
+        report(city)
 
 if __name__ == "__main__":
     main()
