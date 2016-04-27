@@ -1,8 +1,8 @@
+from pandas     as pd
 import requests
-import sqlite3       as lite
+import sqlite3  as lite
 import time
 
-from pandas.io.json  import json_normalize
 
 con     = lite.connect('temperatures.db')
 apikey  = '8f30f6b1ab2d7700660fd87ac5421415'
