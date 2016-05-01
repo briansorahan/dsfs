@@ -45,6 +45,9 @@ INSERT INTO citibike_reference (
 """
 
 def createTables(station_ids):
+    """
+    Create SQL tables for citibike data and per-station availability.
+    """
     with con:
         cur = con.cursor()
         cur.execute(createCitibikeTable)
@@ -54,6 +57,9 @@ def createTables(station_ids):
         cur.execute("CREATE TABLE available_bikes ( execution_time INT, " +  ", ".join(station_ids) + ");")
 
 def insertStationList(station_list):
+    """
+    Insert citibike data.
+    """
     with con:
         cur = con.cursor()
         for station in station_list:
@@ -74,6 +80,9 @@ def insertStationList(station_list):
             ))
 
 def insertAvailableBikes(exec_time, stations):
+    """
+    Insert per-station availability data.
+    """
     with con:
         cur      = con.cursor()
         id_bikes = collections.defaultdict(int) # defaultdict to store available bikes by station

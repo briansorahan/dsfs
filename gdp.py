@@ -5,6 +5,9 @@ con = lite.connect('life_exp.db')
 
 insert = "UPDATE educational_life_expectancies SET gdp = ? WHERE country = ? AND year = ?"
 
+def gdpValues(line):
+    return (line[year - 1956], line[0], year)
+
 def main():
     with con:
         cur = con.cursor()
@@ -13,7 +16,7 @@ def main():
             csvReader = csv.reader(f)
             for line in csvReader:
                 for year in range(1999, 2011):
-                    cur.execute(insert, (line[year - 1956], line[0], year))
+                    cur.execute(insert, gdpValues(line))
 
 if __name__ == "__main__":
     main()

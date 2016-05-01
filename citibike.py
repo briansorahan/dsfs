@@ -4,12 +4,14 @@ import matplotlib.pyplot as plt
 import pandas            as pd
 import sqlite3           as lite
 
+# Set up data frame and dict to store hourly deltas
 con         = lite.connect('citi_bike.db')
 cur         = con.cursor()
 sel         = "SELECT * FROM available_bikes ORDER BY execution_time"
 df          = pd.read_sql_query(sel,con,index_col='execution_time')
 hour_change = collections.defaultdict(int)
 
+# Store the hourly deltas
 for col in df.columns:
     station_vals   = df[col].tolist()
     station_id     = col[1:] # trim the "_"
@@ -26,7 +28,7 @@ def keywithmaxval(d):
 # assign the max key to max_station
 max_station = keywithmaxval(hour_change)
 
-#query sqlite for reference information
+# query sqlite for reference information
 cur.execute("SELECT id, stationname, latitude, longitude FROM citibike_reference WHERE id = ?", (max_station,))
 data = cur.fetchone()
 print("The most active station is station id %s at %s latitude: %s longitude: %s " % data)
