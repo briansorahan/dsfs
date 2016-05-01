@@ -16,7 +16,8 @@ CREATE TABLE educational_life_expectancies (
     total                  INT,
     male_life_expectancy   INT,
     female_life_expectancy INT,
-    year                   INT
+    year                   INT,
+    gdp                    NUMERIC
 )
 """
 
