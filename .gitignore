@@ -4,3 +4,5 @@
 # postgres data
 capstone/pgdata/
 capstone/postgres.log
+
+*.pyc
