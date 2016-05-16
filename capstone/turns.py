@@ -4,14 +4,6 @@ import numpy              as np
 import pandas             as pd
 import psycopg2
 
-createConcavitiesTable = """
-CREATE TABLE concavity (
-    device_id uuid
-    concavity float
-    timestamp int
-);
-"""
-
 # TODO: get headings for all devices for all companies
 getHeadings = """
 SELECT    h.device_id,
