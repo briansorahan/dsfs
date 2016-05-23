@@ -6,3 +6,5 @@ capstone/pgdata/
 capstone/postgres.log
 
 *.pyc
+
+.ipynb_checkpoints/

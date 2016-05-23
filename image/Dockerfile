@@ -5,7 +5,9 @@ USER root
 RUN  apt-get update
 RUN  apt-get -y install libxml2 libxslt1-dev sqlite3
 
+RUN  rm /bin/sh && ln -s /bin/bash /bin/sh
+
 USER $NB_USER
 
-RUN  conda install --quiet --yes lxml=3.5.0 psycopg2=2.6.1
-RUN  conda install -c IOOS --quiet --yes folium=0.2.0
+RUN  . /opt/conda/envs/python2/bin/activate python2 && conda install \
+         -c IOOS --quiet --yes folium=0.2.0 shapely=1.5.13 boto=2.40.0
