@@ -8,3 +8,5 @@ capstone/postgres.log
 *.pyc
 
 .ipynb_checkpoints/
+
+*.env
