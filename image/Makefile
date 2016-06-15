@@ -1,5 +1,8 @@
 IMG=bsorahan/ipynb
 
+clean:
+	@rm -rf .image .push
+
 image: .image
 
 .image: Dockerfile
@@ -12,7 +15,7 @@ push: .push
 	@docker push $(IMG)
 	@touch $@
 
-clean:
-	@rm -rf .image .push
+shell:
+	@docker run -it --rm $(IMG) sh
 
-.PHONY: clean image push
+.PHONY: clean image push shell
