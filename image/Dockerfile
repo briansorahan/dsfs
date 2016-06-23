@@ -10,4 +10,6 @@ RUN  rm /bin/sh && ln -s /bin/bash /bin/sh
 USER $NB_USER
 
 RUN  . /opt/conda/envs/python2/bin/activate python2 && conda install \
-         -c osgeo -c IOOS --quiet --yes folium=0.2.0 shapely=1.5.13 boto=2.40.0 gdal=1.11.4 geopandas=0.2.0.dev0
+         -c osgeo -c IOOS -c jjhelmus --quiet --yes \
+	 folium=0.2.0 shapely=1.5.13 pyproj=1.9.3 \
+	 boto=2.40.0 gdal=1.11.4 geopandas=0.2.0.dev0 geojsonio=0.0.2
