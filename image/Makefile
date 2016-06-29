@@ -15,6 +15,9 @@ push: .push
 	@docker push $(IMG)
 	@touch $@
 
+python:
+	@docker run -it --rm $(IMG) python2
+
 shell:
 	@docker run -it --rm $(IMG) sh
 
