@@ -3,7 +3,7 @@ FROM jupyter/scipy-notebook
 USER root
 
 RUN  apt-get update
-RUN  apt-get -y install libxml2 libxslt1-dev sqlite3 libgdal-dev
+RUN  apt-get -y install libxml2 libxslt1-dev sqlite3 libgdal-dev libpq5
 
 RUN  wget http://http.us.debian.org/debian/pool/main/libj/libjpeg8/libjpeg8_8d-1+deb7u1_amd64.deb && dpkg -i libjpeg8_8d-1+deb7u1_amd64.deb
 
