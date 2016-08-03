@@ -1,11 +1,11 @@
 IMAGE           = bsorahan/ipynb
 IPYTHON         = /opt/conda/bin/ipython
 PYTHON2         = /opt/conda/bin/python2.7
-PORT           ?= 8888
+JUPYTER_PORT   ?= 8888
 
 # default target
 notebook        :
-		@docker run --rm -it -p $(PORT):8888 -v $(shell pwd)/notebooks:/home/jovyan/work $(IMAGE)
+		@docker run --rm -it -p $(JUPYTER_PORT):8888 -v $(shell pwd)/notebooks:/home/jovyan/work $(IMAGE)
 
 all             : image
 
